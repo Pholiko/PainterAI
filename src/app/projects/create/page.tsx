@@ -84,14 +84,37 @@ export default function CreateProjectPage() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            // Convert original blob URL to base64 for persistence in SQLite (Mock mode only)
             let origBase64 = originalImage;
             if (originalImage?.startsWith("blob:")) {
-                const blob = await fetch(originalImage).then(r => r.blob());
-                origBase64 = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.readAsDataURL(blob);
+                // Compress image using canvas before converting to base64
+                origBase64 = await new Promise<string>((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        let width = img.width;
+                        let height = img.height;
+                        const MAX_SIZE = 800; // Resize to max 800px
+
+                        if (width > height && width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        } else if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext("2d");
+                        if (ctx) {
+                            ctx.drawImage(img, 0, 0, width, height);
+                            // Compress as WebP or JPEG to save space
+                            resolve(canvas.toDataURL("image/jpeg", 0.7)); 
+                        } else {
+                            resolve(originalImage as string); // fallback
+                        }
+                    };
+                    img.src = originalImage;
                 });
             }
 
