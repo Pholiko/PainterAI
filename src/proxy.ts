@@ -29,7 +29,7 @@ export default withAuth(
 
 export const config = {
     matcher: [
-        // Protect everything except public assets, api/auth, and login
-        "/((?!api/auth|login|_next/static|_next/image|favicon.ico).*)",
+        // Protect everything except public assets, api/auth, login, and register
+        "/((?!api/auth|api/register|login|register|_next/static|_next/image|favicon.ico).*)",
     ],
 };
