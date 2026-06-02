@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          String    @default("COMPANY") // "ADMIN" or "COMPANY"
+  companyName   String?
+  hourlyRate    Float?    // Hourly rate in currency (e.g. 65.0)
+  materialCost  Float?    // Default material cost per unit (e.g. 12.50)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  projects      Project[]
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  name            String
+  clientName      String?  // New field for customer name
+  status          String   @default("IN_PROGRESS") // IN_PROGRESS, OFFER_CREATED, SENT
+  originalImage   String   // URL or base64 (mock)
+  generatedImage  String?  // URL
+  analysisData    String?  // JSON string of results
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

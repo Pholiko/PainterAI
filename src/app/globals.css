@@ -1,26 +1,118 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Default to Dark Mode aesthetics heavily */
+  --radius: 0.75rem;
+
+  /* Premium Dark Theme Variables by default */
+  --background: oklch(0.25 0.02 260);
+  /* Very dark blue-ish grey */
+  --foreground: oklch(0.985 0 0);
+
+  --card: oklch(0.30 0.03 260);
+  /* Slightly lighter */
+  --card-foreground: oklch(0.985 0 0);
+
+  --popover: oklch(0.30 0.03 260);
+  --popover-foreground: oklch(0.985 0 0);
+
+  /* Vibrant Brand Color (Electric Blue-Purple) */
+  --primary: oklch(0.60 0.20 280);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.40 0.05 260);
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted: oklch(0.35 0.03 260);
+  --muted-foreground: oklch(0.70 0 0);
+
+  --accent: oklch(0.40 0.05 260);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --destructive: oklch(0.60 0.18 20);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(1 0 0 / 0.1);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.60 0.20 280);
+}
+
+.dark {
+  /* Same as root for now, ensuring dark persistence */
+  --background: oklch(0.25 0.02 260);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.30 0.03 260);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.30 0.03 260);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.60 0.20 280);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.40 0.05 260);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.35 0.03 260);
+  --muted-foreground: oklch(0.70 0 0);
+  --accent: oklch(0.40 0.05 260);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.60 0.18 20);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 0.1);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.60 0.20 280);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in oklch, var(--ring), transparent 50%);
+    /* rough approx for outline-ring/50 */
+    border-style: solid;
+    /* Ensure border style is set if needed, though preflight usually handles it */
+    border-width: 0;
+    /* Tailwind preflight defaults to 0, utilities add width. But * needs to inherit? No. */
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    /* Subtle gradient mesh background */
+    background-image:
+      radial-gradient(circle at 15% 50%, oklch(0.60 0.20 280 / 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, oklch(0.60 0.20 280 / 0.05), transparent 25%);
+    background-attachment: fixed;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg;
+}
+
+@utility glass-card {
+  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-xl;
 }
